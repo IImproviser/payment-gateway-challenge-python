@@ -68,14 +68,14 @@ Invalid payment requests retain FastAPI's HTTP status codes: invalid request enc
 
 Expired cards report both `expiry_month` and `expiry_year` in `error.details`, because expiry is a combined rule. Type/range errors identify only the field that failed its constraint.
 
-| POST outcome | HTTP | Business status | Stored / queryable |
+| Bank outcome / Gateway condition | Gateway HTTP | Gateway payment status | Stored / queryable |
 | --- | --- | --- | --- |
-| Invalid request encoding (for example, invalid UTF-8) | 400 | Rejected | No; bank is not called |
-| Invalid JSON or payment fields | 422 | Rejected | No; bank is not called |
-| Bank authorizes | 201 | Authorized | Yes |
-| Bank declines | 201 | Declined | Yes |
-| Bank HTTP error, timeout, connection failure, invalid response | 201 | Declined | Yes |
-| Unexpected gateway programming or storage failure | 500 | No payment status | Creation is not reported as successful |
+| Gateway: invalid request encoding (for example, invalid UTF-8) | 400 | Rejected | No; bank is not called |
+| Gateway: invalid JSON or payment fields | 422 | Rejected | No; bank is not called |
+| Bank: HTTP 200, `authorized: true` | 201 | Authorized | Yes |
+| Bank: HTTP 200, `authorized: false` | 201 | Declined | Yes |
+| Bank call: unexpected HTTP status, timeout, connection failure or invalid response | 201 | Declined | Yes |
+| Gateway: unexpected programming or storage failure | 500 | No payment status | Creation is not reported as successful |
 
 For requests containing all required fields, the provided simulator authorizes cards ending in `1`, `3`, `5`, `7` or `9`, declines cards ending in `2`, `4`, `6` or `8`, and responds with HTTP 503 for cards ending in `0`. These rules remain in the simulator; every valid payment request goes through the bank client. Invalid gateway requests are rejected before a bank call.
 
