@@ -1,0 +1,10 @@
+name: payment-gateway-challenge
+channels:
+  - conda-forge
+  - nodefaults
+dependencies:
+  - python=3.12
+  - nodejs=22  # Runtime for the Pyright development checker.
+  - pip
+  - pip:
+      - poetry==1.8.5

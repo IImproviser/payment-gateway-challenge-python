@@ -1,20 +1,48 @@
 [tool.poetry]
 name = "payment-gateway-api"
 version = "0.1.0"
-description = "Payment Gateway API"
-authors = ["Author <author@example.com>"]
+description = "FastAPI payment gateway for the Checkout.com take-home challenge"
+authors = []
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "^3.8"
-uvicorn = "^0.17.6"
-gunicorn = "^20.1.0"
-fastapi = "^0.103.2"
+python = "^3.12"
+uvicorn = "^0.54.0"
+fastapi = "^0.142.2"
+pydantic = "^2.13.5"
+httpx = "^0.28.1"
 
 [tool.poetry.group.dev.dependencies]
-pytest = "^6.2.4"
-requests = "^2.31.0"
-httpx = "^0.25.0"
+pytest = "^9.1.1"
+# Required by the current Starlette TestClient; bank calls use HTTPX above.
+httpx2 = "^2.13.1"
+pytest-cov = "^7.1.0"
+ruff = "0.9.10"
+pyright = "1.1.407"
+
+[tool.pyright]
+include = ["payment_gateway_api", "tests", "main.py"]
+pythonVersion = "3.12"
+typeCheckingMode = "basic"
+
+[tool.ruff]
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E4", "E7", "E9", "F", "I"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+markers = ["bank: integration tests using the supplied Docker bank simulator"]
+filterwarnings = ["error"]
+
+[tool.coverage.run]
+branch = true
+source = ["payment_gateway_api"]
+
+[tool.coverage.report]
+show_missing = true
+fail_under = 95
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
